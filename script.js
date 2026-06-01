@@ -2,9 +2,9 @@
 let products = JSON.parse(localStorage.getItem('products')) || [
     {
         id: "prod_1",
-        title: "E-Book Belajar Coding HTML",
+        title: "VIIP ADDON,
         price: "Rp 50.000",
-        waAdmin: "628123456789", // Ganti dengan nomor WA Anda
+        waAdmin: "6287755430203", // Ganti dengan nomor WA Anda
         fileUrl: "https://drive.google.com/file/d/contoh-file-ebook",
         buyers: []
     }
