@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Digital & Admudcrot</title>
+    <title>Toko Digital & Akses Materi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,8 +19,8 @@
     <div class="container">
         
         <section id="login-section" class="card">
-            <h2>Form Login</h2>
-            <p style="font-size: 13px; color: #666;">*Gunakan ID bebas untuk pembeli, atau ID <strong>admin</strong> untuk masuk ke dashboard.</p>
+            <h2>Form Login Pembeli</h2>
+            <p style="font-size: 13px; color: #666; margin-bottom: 10px;">*Masukkan nama/ID bebas untuk masuk sebagai pembeli, atau ketik <strong>admin</strong> untuk masuk ke panel admin.</p>
             <input type="text" id="login-id" placeholder="Masukkan ID Pembeli / Admin">
             <button onclick="login()">Masuk</button>
         </section>
@@ -50,24 +50,25 @@
             <input type="hidden" id="prod-index">
             <input type="text" id="prod-title" placeholder="Nama Produk">
             <input type="text" id="prod-price" placeholder="Harga (Contoh: Rp 50.000)">
-            <input type="text" id="prod-wa" placeholder="Nomor WA Admin (Contoh: 62812345678)">
+            <input type="text" id="prod-wa" placeholder="Nomor WA Admin (Contoh: 6287755430203)">
             <textarea id="prod-file" placeholder="Link Materi / File (Google Drive, dll)"></textarea>
             <button id="btn-save-prod" onclick="saveProduct()">Simpan Produk</button>
             <button id="btn-cancel-edit" class="hidden" onclick="clearAdminForm()">Batal</button>
 
             <hr>
-            <h3>Aktivasi Pembelian (Input ID User)</h3>
+            <h3>Aktivasi Pembelian (Input ID Pembeli atau ID Transaksi)</h3>
+            <p style="font-size: 13px; color: #666;">Pilih produk lalu masukkan ID acak pembeli yang didapat dari WhatsApp untuk memberi mereka akses materi.</p>
             <select id="select-product"></select>
-            <input type="text" id="buyer-id-input" placeholder="Masukkan ID Pembeli">
+            <input type="text" id="buyer-id-input" placeholder="Masukkan ID Pembeli (Contoh: budi123 atau TRX-8492)">
             <button onclick="activateProduct()">Berikan Akses Produk</button>
 
             <hr>
-            <h3>Daftar Produk (Admin)</h3>
+            <h3>Daftar Produk & Hak Akses</h3>
             <div id="admin-product-list"></div>
         </section>
 
     </div>
 
+    <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>
