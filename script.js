@@ -2,7 +2,7 @@
 let products = JSON.parse(localStorage.getItem('products')) || [
     {
         id: "prod_1",
-        title: "VIIP ADDON,
+        title: "VIIP ADDON",
         price: "Rp 50.000",
         waAdmin: "6287755430203", // Ganti dengan nomor WA Anda
         fileUrl: "https://drive.google.com/file/d/contoh-file-VIP-ADDON",
