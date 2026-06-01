@@ -1,25 +1,24 @@
-// Mengambil data dari LocalStorage atau set data bawaan jika kosong
+// Data default produk bawaan awal
 let products = JSON.parse(localStorage.getItem('products')) || [
     {
         id: "prod_1",
-        title: "VIIP ADDON",
+        title: "VIP ADDON",
         price: "Rp 50.000",
-        waAdmin: "6287755430203", // Ganti dengan nomor WA Anda
+        waAdmin: "6287755430203", 
         fileUrl: "https://drive.google.com/file/d/contoh-file-VIP-ADDON",
-        buyers: []
+        buyers: [] // Menyimpan list ID Pembeli/ID Transaksi yang sudah lunas
     }
 ];
 
 let currentUser = localStorage.getItem('currentUser') || null;
 
-// Jalankan fungsi inisialisasi saat halaman dimuat
 window.onload = function() {
     checkSession();
     renderStore();
     renderAdminDashboard();
 };
 
-// --- SISTEM LOGIN & SESSION ---
+// --- SISTEM LOGIN ---
 function login() {
     const idInput = document.getElementById('login-id').value.trim();
     if (!idInput) return alert('ID tidak boleh kosong!');
@@ -58,13 +57,14 @@ function checkSession() {
     }
 }
 
-// --- NAVIGASI TAB USER ---
+// --- NAVIGASI TAB ---
 function switchTab(tabName) {
     if (tabName === 'store') {
         document.getElementById('store-tab').classList.remove('hidden');
         document.getElementById('my-products-tab').classList.add('hidden');
         document.querySelectorAll('.tab-btn')[0].classList.add('active');
         document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+        renderStore();
     } else {
         document.getElementById('store-tab').classList.add('hidden');
         document.getElementById('my-products-tab').classList.remove('hidden');
@@ -74,29 +74,32 @@ function switchTab(tabName) {
     }
 }
 
-// --- PEMBELIAN VIA WHATSAPP ---
+// --- PEMBELIAN DENGAN GENERATE ID ACAK ---
 function buyViaWA(productId) {
     const prod = products.find(p => p.id === productId);
     if (!prod) return;
 
-    const pesan = `Halo Admin, saya ingin membeli produk:\n\n` +
+    // Membuat ID Transaksi Acak (Contoh: TRX-7492)
+    const randomTxId = "TRX-" + Math.floor(1000 + Math.random() * 9000);
+
+    const pesan = `Halo Admin, saya ingin membeli produk berikut:\n\n` +
                   `Nama Produk: ${prod.title}\n` +
                   `Harga: ${prod.price}\n` +
-                  `ID Pembeli Saya: ${currentUser}\n\n` +
-                  `Mohon informasi rekening pembayarannya. Terima kasih.`;
+                  `Nama Akun: ${currentUser}\n` +
+                  `ID Pembelian (Acak): ${randomTxId}\n\n` +
+                  `Mohon info rekening pembayarannya min. Terima kasih!`;
 
-    // Encode text agar aman di dalam URL
     const urlWA = `https://api.whatsapp.com/send?phone=${prod.waAdmin}&text=${encodeURIComponent(pesan)}`;
     window.open(urlWA, '_blank');
 }
 
-// --- TAMPILAN HALAMAN USER ---
+// --- RENDER HALAMAN USER ---
 function renderStore() {
     const list = document.getElementById('product-list');
+    if (!list) return;
     list.innerHTML = '';
 
     products.forEach(prod => {
-        // Cek apakah user sudah punya produk ini
         const isOwned = prod.buyers.includes(currentUser);
         
         list.innerHTML += `
@@ -104,7 +107,7 @@ function renderStore() {
                 <h3>${prod.title}</h3>
                 <p style="color: #007bff; font-weight: bold; margin: 10px 0;">${prod.price}</p>
                 ${isOwned ? 
-                    `<button style="background-color: #6c757d;" disabled>Sudah Dibeli</button>` : 
+                    `<button style="background-color: #6c757d;" disabled>Sudah Diakses ✓</button>` : 
                     `<button onclick="buyViaWA('${prod.id}')">Pesan Produk</button>`
                 }
             </div>
@@ -114,6 +117,7 @@ function renderStore() {
 
 function renderOwnedProducts() {
     const list = document.getElementById('owned-product-list');
+    if (!list) return;
     list.innerHTML = '';
     let ownedCount = 0;
 
@@ -134,28 +138,27 @@ function renderOwnedProducts() {
 
     document.getElementById('count-owned').innerText = ownedCount;
     if(ownedCount === 0) {
-        list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#999;">Anda belum memiliki produk.</p>`;
+        list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#999; margin-top:20px;">Anda belum memiliki produk aktif.</p>`;
     }
 }
 
-// --- FUNGSI UTAMA ADMIN (CRUD + AKTIVASI) ---
+// --- FITUR ADMIN CONTROL PANEL ---
 function renderAdminDashboard() {
     const adminList = document.getElementById('admin-product-list');
     const selectProd = document.getElementById('select-product');
     
+    if (!adminList || !selectProd) return;
     adminList.innerHTML = '';
     selectProd.innerHTML = '';
 
     products.forEach((prod, index) => {
-        // Dropdown untuk aktivasi
         selectProd.innerHTML += `<option value="${prod.id}">${prod.title}</option>`;
 
-        // List produk di admin
         adminList.innerHTML += `
             <div class="admin-item">
                 <div>
                     <strong>${prod.title}</strong> (${prod.price}) <br>
-                    <small>Pembeli terdaftar: [ ${prod.buyers.join(', ') || 'Belum ada'} ]</small>
+                    <small>Akses Diberikan ke ID: [ ${prod.buyers.join(', ') || 'Belum ada'} ]</small>
                 </div>
                 <div>
                     <button style="background-color: #ffc107; color: black; padding: 5px 10px;" onclick="editProduct(${index})">Edit</button>
@@ -176,14 +179,12 @@ function saveProduct() {
     if (!title || !price || !wa || !file) return alert('Mohon isi semua field produk!');
 
     if (editIndex === "") {
-        // Tambah Baru
         const newProd = {
             id: "prod_" + Date.now(),
             title, price, waAdmin: wa, fileUrl: file, buyers: []
         };
         products.push(newProd);
     } else {
-        // Edit yang sudah ada
         products[editIndex].title = title;
         products[editIndex].price = price;
         products[editIndex].waAdmin = wa;
@@ -213,17 +214,16 @@ function deleteProduct(index) {
     }
 }
 
-// FITUR UTAMA: Memasukkan ID Pembeli ke Produk
 function activateProduct() {
     const prodId = document.getElementById('select-product').value;
     const buyerId = document.getElementById('buyer-id-input').value.trim();
 
-    if (!buyerId) return alert('Masukkan ID Pembeli terlebih dahulu!');
+    if (!buyerId) return alert('Masukkan ID terlebih dahulu!');
 
     const prod = products.find(p => p.id === prodId);
     if (prod) {
         if (prod.buyers.includes(buyerId)) {
-            alert('User ini sudah memiliki akses ke produk tersebut.');
+            alert('ID ini sudah terdaftar mendapatkan akses.');
         } else {
             prod.buyers.push(buyerId);
             saveAndRefresh();
