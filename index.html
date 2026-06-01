@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Digital & Akses Materi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">DigitalStore</div>
+        <nav>
+            <span id="user-display">Belum Login</span>
+            <button id="btn-logout" class="hidden" onclick="logout()">Logout</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section id="login-section" class="card">
+            <h2>Form Login</h2>
+            <p style="font-size: 13px; color: #666;">*Gunakan ID bebas untuk pembeli, atau ID <strong>admin</strong> untuk masuk ke dashboard.</p>
+            <input type="text" id="login-id" placeholder="Masukkan ID Pembeli / Admin">
+            <button onclick="login()">Masuk</button>
+        </section>
+
+        <section id="main-menu" class="hidden">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('store')">Toko Produk</button>
+                <button class="tab-btn" onclick="switchTab('my-products')">Produk Saya (<span id="count-owned">0</span>)</button>
+            </div>
+
+            <div id="store-tab" class="tab-content">
+                <h2>Produk Tersedia</h2>
+                <div id="product-list" class="grid"></div>
+            </div>
+
+            <div id="my-products-tab" class="tab-content hidden">
+                <h2>Materi Pembelajaran Anda</h2>
+                <div id="owned-product-list" class="grid"></div>
+            </div>
+        </section>
+
+        <section id="admin-dashboard" class="hidden card">
+            <h2>Dashboard Admin</h2>
+            <hr>
+            
+            <h3>Tambah / Edit Produk</h3>
+            <input type="hidden" id="prod-index">
+            <input type="text" id="prod-title" placeholder="Nama Produk">
+            <input type="text" id="prod-price" placeholder="Harga (Contoh: Rp 50.000)">
+            <input type="text" id="prod-wa" placeholder="Nomor WA Admin (Contoh: 62812345678)">
+            <textarea id="prod-file" placeholder="Link Materi / File (Google Drive, dll)"></textarea>
+            <button id="btn-save-prod" onclick="saveProduct()">Simpan Produk</button>
+            <button id="btn-cancel-edit" class="hidden" onclick="clearAdminForm()">Batal</button>
+
+            <hr>
+            <h3>Aktivasi Pembelian (Input ID User)</h3>
+            <select id="select-product"></select>
+            <input type="text" id="buyer-id-input" placeholder="Masukkan ID Pembeli">
+            <button onclick="activateProduct()">Berikan Akses Produk</button>
+
+            <hr>
+            <h3>Daftar Produk (Admin)</h3>
+            <div id="admin-product-list"></div>
+        </section>
+
+    </div>
+
+</body>
+<script src="script.js"></script>
+</html>
